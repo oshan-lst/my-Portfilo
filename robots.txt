@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://oshantheekshandev.vercel.app/sitemap.xml
