@@ -5,27 +5,18 @@
 
 
 const CONFIG = {
+    email: "oshantheekshana63@gmail.com",
 
-    // Your email address
-    email: "YOUR_EMAIL@example.com",
-
-    // Optional: Form submission endpoint
     formSubmitEndpoint: "",
 
-    // Scroll animation image sequence
-    // Keep 0 if you haven't added sequence images yet.
     frameCount: 0,
 
-    // Image sequence path
     framePath: (i) =>
         `assets/frames/frame_${String(i).padStart(3, "0")}.jpg`
-
 };
 
 
-/* =========================================================
-   02. START APPLICATION
-========================================================= */
+//applicaion
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -34,9 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ).matches;
 
 
-    /* =====================================================
-       03. PAGE LOADER
-    ===================================================== */
+    //page loader
 
     const loader = document.getElementById("siteLoader");
 
@@ -54,9 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2200);
 
 
-    /* =====================================================
-       04. AUTOMATIC COPYRIGHT YEAR
-    ===================================================== */
+    //copyrigth year
 
     const yearElement = document.getElementById("currentYear");
 
@@ -65,9 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       05. DARK / LIGHT MODE
-    ===================================================== */
+    //dark & light
 
     const themeButton = document.getElementById("themeToggle");
 
@@ -120,9 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
-       06. SMOOTH NAVIGATION
-    ===================================================== */
+   //smooth animate
 
     document.querySelectorAll('a[href^="#"]').forEach(link => {
 
@@ -162,9 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
-       07. NAVBAR SCROLL EFFECT
-    ===================================================== */
+    //nav bar scroll fun
 
     const navbar = document.getElementById("siteNav");
 
@@ -212,9 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
-       08. ACTIVE NAVIGATION LINKS
-    ===================================================== */
+    //nav link
 
     const navigationLinks = [
         ...document.querySelectorAll(".nav-link")
@@ -280,9 +259,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
-       09. ANIMATED DEVELOPER / DESIGNER / CREATOR TEXT
-    ===================================================== */
+   
+       // ANIMATED DEVELOPER / DESIGNER / CREATOR TEXT
+   
 
     const roles = [
 
@@ -362,10 +341,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       10. SCROLL REVEAL ANIMATIONS
-       GSAP + ScrollTrigger
-    ===================================================== */
+    
+       //SCROLL REVEAL ANIMATIONS
+       
+    
 
     if (
         !reducedMotion &&
@@ -1372,15 +1351,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// const CONFIG = {
-
-//     email: "oshantheekshana63@gmail.com",
-
-//     formSubmitEndpoint: "",
-
-//     frameCount: 0,
-
-//     framePath: (i) =>
-//         `assets/frames/frame_${String(i).padStart(3, "0")}.jpg`
-
-// };
