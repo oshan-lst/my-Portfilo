@@ -1527,3 +1527,232 @@ main,
     transition-duration: .01ms !important;
   }
 }
+
+/* Hero visual */
+
+.hero-section {
+    isolation: isolate;
+}
+
+.hero-visual {
+    position: absolute;
+    right: 1%;
+    top: 25%;
+    width: 33%;
+    height: 65%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.visual-rings {
+    position: absolute;
+    inset: 10% 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visual-rings span {
+    position: absolute;
+    width: 95%;
+    aspect-ratio: 1;
+    border: 1px solid rgba(139,124,255,.5);
+    border-radius: 50%;
+    box-shadow: 0 0 35px rgba(139,124,255,.12);
+}
+
+.visual-rings span:nth-child(2) {
+    width: 75%;
+    opacity: .55;
+    animation: ringRotate 18s linear infinite;
+    border-style: dashed;
+}
+
+.visual-rings span:nth-child(3) {
+    width: 110%;
+    opacity: .25;
+    transform: rotateX(65deg);
+    animation: ringPulse 6s ease-in-out infinite;
+}
+
+@keyframes ringRotate {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes ringPulse {
+    50% { transform: rotateX(65deg) scale(1.12); }
+}
+
+.visual-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(.96);
+    transition:
+        opacity 1.2s ease,
+        transform 1.2s ease,
+        visibility 1.2s;
+}
+
+.visual-slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.hero-profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    mask-image: linear-gradient(
+        to bottom,
+        black 0%,
+        black 75%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        black 0%,
+        black 75%,
+        transparent 100%
+    );
+    filter: drop-shadow(0 0 35px rgba(139,124,255,.25));
+}
+
+.model-slide model-viewer {
+    display: block;
+    width: 100%;
+    height: 100%;
+    --poster-color: transparent;
+    background: transparent;
+    animation: modelFloat 5s ease-in-out infinite;
+}
+
+@keyframes modelFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+}
+
+.model-greeting {
+    position: absolute;
+    top: 20%;
+    right: -8%;
+    padding: 12px 19px;
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    background: rgba(18,18,38,.85);
+    backdrop-filter: blur(12px);
+    color: #d8d1ff;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    animation: greetingFloat 3s ease-in-out infinite;
+}
+
+@keyframes greetingFloat {
+    50% { transform: translateY(-10px); }
+}
+
+.visual-label {
+    position: absolute;
+    right: 0;
+    bottom: 2%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent-light);
+}
+
+.visual-status {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 15px var(--accent);
+}
+
+.hero-socials {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    gap: 12px;
+    margin-top: 35px;
+}
+
+.hero-socials a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    background: rgba(20,20,40,.5);
+    color: var(--text);
+    font-size: 17px;
+    transition: .3s ease;
+}
+
+.hero-socials a:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 0 22px rgba(139,124,255,.4);
+}
+
+@media (max-width: 991px) {
+    .hero-visual {
+        width: 38%;
+        right: 0;
+        top: 28%;
+        height: 55%;
+        opacity: .75;
+    }
+
+    .model-greeting {
+        right: 0;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-visual {
+        position: relative;
+        width: min(85%, 350px);
+        height: 390px;
+        top: auto;
+        right: auto;
+        margin: 30px auto 0;
+        z-index: 1;
+        opacity: 1;
+    }
+
+    .hero-socials {
+        justify-content: center;
+        margin-top: 25px;
+    }
+
+    .model-greeting {
+        right: -5px;
+    }
+
+    .visual-label {
+        bottom: -10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .visual-rings span,
+    .model-slide model-viewer,
+    .model-greeting {
+        animation: none;
+    }
+}

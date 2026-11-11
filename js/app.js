@@ -1339,6 +1339,39 @@ ${formData.message}`
 
 });
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const photo = document.getElementById("photoSlide");
+    const model = document.getElementById("modelSlide");
+    const label = document.getElementById("visualLabel");
+
+    if (!photo || !model) return;
+
+    let showModel = false;
+
+    function switchHeroVisual() {
+        showModel = !showModel;
+
+        photo.classList.toggle("active", !showModel);
+        model.classList.toggle("active", showModel);
+
+        if (label) {
+            label.textContent = showModel
+                ? "MEET MY 3D AVATAR"
+                : "MEET THE DEVELOPER";
+        }
+    }
+
+    const motionPreference = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
+
+    if (!motionPreference.matches) {
+        setInterval(switchHeroVisual, 10000);
+    }
+});
+
+
 // const CONFIG = {
 
 //     email: "oshantheekshana63@gmail.com",
