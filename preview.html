@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oshan | 3D Avatar Preview</title>
+
+<style>
+:root {
+    --bg: #080817;
+    --surface: #151326;
+    --accent: #8b7cff;
+    --text: #f5f3ff;
+    --muted: #aaa6c3;
+    --border: #302b4c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+.app {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+header {
+    height: 66px;
+    flex-shrink: 0;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+header small {
+    color: var(--muted);
+    letter-spacing: 1px;
+}
+
+.viewer {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: radial-gradient(
+        ellipse at 50% 45%,
+        #252047,
+        #100e22 55%,
+        #080817 90%
+    );
+}
+
+#canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#canvas canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+.status {
+    position: absolute;
+    top: 22px;
+    left: 5%;
+    z-index: 2;
+    color: #c0b8ff;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.controls {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+}
+
+button {
+    padding: 11px 18px;
+    border: 1px solid var(--accent);
+    border-radius: 30px;
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s;
+}
+
+button:hover,
+button.active {
+    background: var(--accent);
+    color: white;
+}
+
+button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.note {
+    padding: 0 15px 14px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    header {
+        height: 58px;
+    }
+
+    button {
+        padding: 9px 12px;
+        font-size: 11px;
+    }
+
+    .status {
+        font-size: 11px;
+    }
+}
+</style>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+}
+</script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header>
+        <div class="logo">OSHAN<span>.</span></div>
+        <small>3D MODEL PREVIEW</small>
+    </header>
+
+    <main class="viewer">
+        <div id="canvas"></div>
+        <div class="status" id="status">
+            Loading 3D avatar...
+        </div>
+    </main>
+
+    <div class="controls">
+        <button id="waveBtn" disabled>👋 Say Hi</button>
+        <button id="resetBtn" disabled>Reset Pose</button>
+        <button id="rotateBtn" disabled>Auto Rotate</button>
+        <button id="frontBtn" disabled>Front View</button>
+        <button id="sideBtn" disabled>Wave Side: Right</button>
+        <button id="palmBtn" disabled>Palm Direction</button>
+    </div>
+
+    <div class="note">
+        Mouse: head + body follow · Drag: rotate · Scroll: zoom
+    </div>
+
+</div>
+
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const MODEL_PATH = "assets/model/oshan-model.glb";
+
+const CONFIG = {
+    duration: 3.5,
+    followSpeed: 2.2,
+    headYaw: 0.24,
+    headPitch: 0.17,
+    bodyYaw: 0.07,
+    idleArmAngle: 1.3,
+    armRaise: 0.9,
+    armForward: 0.7,
+    elbowBend: 1.25,
+    wristWave: 0.23
+};
+
+const container = document.getElementById("canvas");
+const status = document.getElementById("status");
+
+const waveBtn = document.getElementById("waveBtn");
+const resetBtn = document.getElementById("resetBtn");
+const rotateBtn = document.getElementById("rotateBtn");
+const frontBtn = document.getElementById("frontBtn");
+const sideBtn = document.getElementById("sideBtn");
+const palmBtn = document.getElementById("palmBtn");
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    35, 1, 0.01, 100
+);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true
+});
+
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.25;
+
+container.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0xffffff, 2));
+
+const key = new THREE.DirectionalLight(0xffffff, 3);
+key.position.set(3, 5, 5);
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0x8b7cff, 2);
+fill.position.set(-4, 2, 3);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xb4aaff, 2.5);
+rim.position.set(0, 4, -4);
+scene.add(rim);
+
+const controls = new OrbitControls(
+    camera,
+    renderer.domElement
+);
+
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.autoRotate = false;
+controls.minDistance = 1;
+controls.maxDistance = 15;
+
+const modelRoot = new THREE.Group();
+const centerGroup = new THREE.Group();
+
+scene.add(modelRoot);
+modelRoot.add(centerGroup);
+
+let avatar = null;
+let ready = false;
+let waveStart = -100;
+let waveSide = "Right";
+let palmDirection = 1;
+
+const bones = {};
+const rest = new Map();
+
+const mouse = new THREE.Vector2();
+const smoothMouse = new THREE.Vector2();
+
+const frontPosition = new THREE.Vector3();
+const frontTarget = new THREE.Vector3();
+
+const clock = new THREE.Clock();
+
+const names = [
+    "RightShoulder",
+    "RightArm",
+    "RightForeArm",
+    "RightHand",
+    "LeftShoulder",
+    "LeftArm",
+    "LeftForeArm",
+    "LeftHand",
+    "Neck",
+    "Head",
+    "Spine",
+    "Spine1",
+    "Spine2"
+];
+
+const clamp = THREE.MathUtils.clamp;
+
+function smooth01(v) {
+    const x = clamp(v, 0, 1);
+    return x * x * (3 - 2 * x);
+}
+
+function findBone(name) {
+    let found = null;
+
+    avatar.traverse(object => {
+        if (object.isBone && object.name === name) {
+            found = object;
+        }
+    });
+
+    return found;
+}
+
+function saveBones() {
+    avatar.traverse(object => {
+        if (object.isBone) {
+            rest.set(object, object.quaternion.clone());
+        }
+
+        if (object.isSkinnedMesh) {
+            object.frustumCulled = false;
+        }
+    });
+
+    names.forEach(name => {
+        bones[name] = findBone(name);
+    });
+}
+
+function rotateBone(name, x = 0, y = 0, z = 0) {
+    const bone = bones[name];
+    if (!bone) return;
+
+    const original = rest.get(bone);
+    if (!original) return;
+
+    bone.parent.updateWorldMatrix(true, false);
+
+    const parentWorld = new THREE.Quaternion();
+    bone.parent.getWorldQuaternion(parentWorld);
+
+    const offset = new THREE.Quaternion()
+        .setFromEuler(new THREE.Euler(x, y, z));
+
+    const localOffset = parentWorld.clone()
+        .invert()
+        .multiply(offset)
+        .multiply(parentWorld);
+
+    bone.quaternion.copy(localOffset).multiply(original);
+    bone.updateMatrixWorld(true);
+}
+
+function centerAvatar() {
+    avatar.updateMatrixWorld(true);
+
+    const box = new THREE.Box3().setFromObject(avatar);
+    const size = box.getSize(new THREE.Vector3());
+
+    const maxSize = Math.max(size.x, size.y, size.z);
+
+    if (maxSize <= 0) {
+        throw new Error("Invalid model dimensions");
+    }
+
+    centerGroup.scale.setScalar(3.5 / maxSize);
+    centerGroup.updateMatrixWorld(true);
+
+    const scaledBox = new THREE.Box3()
+        .setFromObject(centerGroup);
+
+    const center = scaledBox.getCenter(new THREE.Vector3());
+
+    modelRoot.position.set(
+        -center.x,
+        -center.y,
+        -center.z
+    );
+
+    modelRoot.updateMatrixWorld(true);
+
+    const finalBox = new THREE.Box3()
+        .setFromObject(modelRoot);
+
+    const finalSize = finalBox.getSize(new THREE.Vector3());
+
+    frontTarget.set(
+        0,
+        finalSize.y * 0.14,
+        0
+    );
+
+    const fov = THREE.MathUtils.degToRad(camera.fov);
+    const visibleHeight = finalSize.y * 0.78;
+
+    const distance =
+        (visibleHeight / 2) / Math.tan(fov / 2);
+
+    frontPosition.set(
+        0,
+        frontTarget.y,
+        Math.max(distance, 2)
+    );
+
+    setFrontView();
+}
+
+function setFrontView() {
+    camera.position.copy(frontPosition);
+    controls.target.copy(frontTarget);
+    controls.update();
+}
+
+function resize() {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+
+    if (!w || !h) return;
+
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+}
+
+new ResizeObserver(resize).observe(container);
+resize();
+
+new GLTFLoader().load(
+    MODEL_PATH,
+
+    gltf => {
+        avatar = gltf.scene;
+        centerGroup.add(avatar);
+
+        saveBones();
+        centerAvatar();
+
+        ready = true;
+
+        [
+            waveBtn,
+            resetBtn,
+            rotateBtn,
+            frontBtn,
+            sideBtn,
+            palmBtn
+        ].forEach(btn => btn.disabled = false);
+
+        status.textContent =
+            "Model ready · Hand-wave animation enabled";
+
+        console.log("Bones:", bones);
+    },
+
+    undefined,
+
+    error => {
+        console.error(error);
+        status.textContent = "GLB loading failed";
+    }
+);
+
+window.addEventListener("pointermove", event => {
+    const rect = container.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    mouse.x = clamp(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -1,
+        1
+    );
+
+    mouse.y = clamp(
+        1 - ((event.clientY - rect.top) / rect.height) * 2,
+        -1,
+        1
+    );
+});
+
+container.addEventListener("pointerleave", () => {
+    mouse.set(0, 0);
+});
+
+function waveProgress(time) {
+    const elapsed = time - waveStart;
+
+    if (elapsed < 0 || elapsed >= CONFIG.duration) {
+        return {
+            amount: 0,
+            wrist: 0
+        };
+    }
+
+    const raise = smooth01(elapsed / 0.85);
+
+    const lower = 1 - smooth01(
+        (elapsed - 2.7) / 0.8
+    );
+
+    const amount = raise * lower;
+
+    const wrist =
+        Math.sin(Math.max(0, elapsed - 0.85) * 10) *
+        amount;
+
+    return { amount, wrist };
+}
+
+function animateArm(side, amount, wrist) {
+    const sign = side === "Right" ? 1 : -1;
+
+    const armName = side + "Arm";
+    const foreArmName = side + "ForeArm";
+    const handName = side + "Hand";
+
+    const idleZ = CONFIG.idleArmAngle * sign;
+
+    const raisedZ = 0.35 * sign;
+
+    const armZ = THREE.MathUtils.lerp(
+        idleZ,
+        raisedZ,
+        amount
+    );
+
+    // Move arm forward and raise elbow.
+    rotateBone(
+        armName,
+        -CONFIG.armForward * amount,
+        -0.12 * sign * amount,
+        armZ
+    );
+
+    // Bend elbow to bring hand beside face.
+    rotateBone(
+        foreArmName,
+        -0.25 * amount,
+        -0.25 * sign * amount,
+        -CONFIG.elbowBend * sign * amount
+    );
+
+    // Palm faces viewer, wrist performs greeting.
+    rotateBone(
+        handName,
+        0.25 * amount,
+        palmDirection *
+            (0.40 + wrist * CONFIG.wristWave) *
+            amount,
+        wrist * 0.18 * sign
+    );
+}
+
+function animatePose(time, dt) {
+    if (!ready) return;
+
+    smoothMouse.x = THREE.MathUtils.damp(
+        smoothMouse.x,
+        mouse.x,
+        CONFIG.followSpeed,
+        dt
+    );
+
+    smoothMouse.y = THREE.MathUtils.damp(
+        smoothMouse.y,
+        mouse.y,
+        CONFIG.followSpeed,
+        dt
+    );
+
+    const yaw = smoothMouse.x;
+    const pitch = smoothMouse.y;
+
+    rotateBone("Spine", -pitch * 0.012, yaw * 0.015, 0);
+    rotateBone("Spine1", -pitch * 0.02, yaw * 0.025, 0);
+    rotateBone("Spine2", -pitch * 0.025, yaw * 0.035, 0);
+
+    rotateBone("Neck", -pitch * 0.055, yaw * 0.085, 0);
+    rotateBone("Head", -pitch * 0.115, yaw * 0.19, 0);
+
+    const { amount, wrist } = waveProgress(time);
+
+    const otherSide =
+        waveSide === "Right" ? "Left" : "Right";
+
+    animateArm(waveSide, amount, wrist);
+    animateArm(otherSide, 0, 0);
+
+    modelRoot.rotation.y = THREE.MathUtils.damp(
+        modelRoot.rotation.y,
+        yaw * 0.025,
+        2,
+        dt
+    );
+
+    modelRoot.rotation.x = THREE.MathUtils.damp(
+        modelRoot.rotation.x,
+        -pitch * 0.012,
+        2,
+        dt
+    );
+
+    if (time - waveStart >= CONFIG.duration) {
+        waveBtn.classList.remove("active");
+    }
+}
+
+waveBtn.onclick = () => {
+    if (!ready) return;
+
+    waveStart = clock.elapsedTime;
+    waveBtn.classList.add("active");
+};
+
+resetBtn.onclick = () => {
+    waveStart = -100;
+    mouse.set(0, 0);
+    smoothMouse.set(0, 0);
+    waveBtn.classList.remove("active");
+};
+
+rotateBtn.onclick = () => {
+    controls.autoRotate = !controls.autoRotate;
+
+    rotateBtn.classList.toggle(
+        "active",
+        controls.autoRotate
+    );
+};
+
+frontBtn.onclick = () => {
+    if (!ready) return;
+
+    controls.autoRotate = false;
+    rotateBtn.classList.remove("active");
+
+    setFrontView();
+};
+
+sideBtn.onclick = () => {
+    waveSide =
+        waveSide === "Right" ? "Left" : "Right";
+
+    sideBtn.textContent = "Wave Side: " + waveSide;
+};
+
+palmBtn.onclick = () => {
+    palmDirection *= -1;
+
+    palmBtn.classList.toggle(
+        "active",
+        palmDirection < 0
+    );
+};
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const dt = Math.min(clock.getDelta(), 0.05);
+    const time = clock.elapsedTime;
+
+    if (ready) {
+        animatePose(time, dt);
+    }
+
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animate();
+</script>
+
+</body>
+</html>
