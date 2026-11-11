@@ -1967,3 +1967,377 @@ main,
 }
 
 
+
+
+
+
+/* CV SHOWCASE */
+
+
+
+.cv-showcase {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 20px;
+    perspective: 1200px;
+}
+
+/* Main Card */
+.cv-card {
+    position: relative;
+    isolation: isolate;
+    width: min(520px, 100%);
+    min-height: 350px;
+    padding: 42px;
+    overflow: hidden;
+    border-radius: 28px;
+
+    background: linear-gradient(
+        135deg,
+        #17142d 0%,
+        #242044 55%,
+        #30265a 100%
+    );
+
+    border: 2px solid rgba(162, 155, 255, 0.75);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.4),
+        0 0 45px rgba(139, 124, 255, 0.15);
+
+    transform: rotate(-5deg) rotateY(-10deg);
+
+    transition:
+        transform 0.6s ease,
+        box-shadow 0.6s ease;
+}
+
+.cv-card:hover {
+    transform: rotate(0deg) rotateY(0deg) translateY(-10px);
+
+    box-shadow:
+        0 35px 90px rgba(0, 0, 0, 0.45),
+        0 0 65px rgba(139, 124, 255, 0.35);
+}
+
+/* Content */
+.cv-card-content {
+    position: relative;
+    z-index: 5;
+}
+
+.cv-label {
+    display: block;
+    margin-bottom: 22px;
+    color: #c4b5fd;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+
+.cv-card h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.cv-card h2 span {
+    color: #a29bff;
+}
+
+.cv-card p {
+    margin-top: 20px;
+    color: #c8c1e4;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    line-height: 1.8;
+}
+
+/* Download Button */
+.cv-download-btn {
+    position: relative;
+    z-index: 6;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    margin-top: 30px;
+    padding: 15px 24px;
+
+    background: #f8f7ff;
+    color: #17132c;
+
+    border-radius: 14px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.cv-download-btn:hover {
+    background: #a29bff;
+    color: #ffffff;
+    transform: translateY(-4px);
+
+    box-shadow: 0 10px 30px rgba(139, 124, 255, 0.35);
+}
+
+.cv-download-btn i {
+    transition: transform 0.3s ease;
+}
+
+.cv-download-btn:hover i {
+    transform: translateY(4px);
+}
+
+/* Animated Background */
+.cv-animated-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* Rotating Rings */
+.cv-orbit {
+    position: absolute;
+    width: 290px;
+    height: 290px;
+    right: -85px;
+    bottom: -110px;
+
+    border: 2px solid transparent;
+    border-top-color: #a29bff;
+    border-right-color: rgba(162, 155, 255, 0.3);
+    border-radius: 50%;
+
+    animation: cvRotate 12s linear infinite;
+}
+
+.cv-orbit-2 {
+    width: 210px;
+    height: 210px;
+    right: -45px;
+    bottom: -70px;
+
+    border-top-color: #6d5dfc;
+    border-right-color: rgba(139, 124, 255, 0.4);
+
+    animation: cvRotate 8s linear infinite reverse;
+}
+
+/* Moving Purple Glow */
+.cv-glow {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    top: -100px;
+    right: -70px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(139, 124, 255, 0.4),
+        transparent 70%
+    );
+
+    filter: blur(20px);
+
+    animation: cvGlowMove 8s ease-in-out infinite alternate;
+}
+
+/* Moving Light Reflection */
+.cv-shine {
+    position: absolute;
+    width: 120px;
+    height: 180%;
+    top: -40%;
+    left: -60%;
+
+    transform: rotate(25deg);
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.09),
+        transparent
+    );
+
+    animation: cvShineMove 7s ease-in-out infinite;
+}
+
+/* Floating Particles */
+.cv-particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+    background: #c4b5fd;
+
+    box-shadow: 0 0 12px #a29bff;
+
+    animation: cvFloat 6s ease-in-out infinite alternate;
+}
+
+.cv-particle:nth-of-type(5) {
+    top: 20%;
+    left: 12%;
+    animation-delay: 0s;
+}
+
+.cv-particle:nth-of-type(6) {
+    top: 65%;
+    left: 22%;
+    animation-delay: 1s;
+}
+
+.cv-particle:nth-of-type(7) {
+    top: 35%;
+    left: 75%;
+    animation-delay: 2s;
+}
+
+.cv-particle:nth-of-type(8) {
+    top: 78%;
+    left: 85%;
+    animation-delay: 3s;
+}
+
+.cv-particle:nth-of-type(9) {
+    top: 15%;
+    left: 55%;
+    animation-delay: 1.5s;
+}
+
+.cv-particle:nth-of-type(10) {
+    top: 85%;
+    left: 48%;
+    animation-delay: 2.5s;
+}
+
+/* Decorative Circles */
+.cv-circle {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.cv-circle-one {
+    right: -80px;
+    bottom: -100px;
+    background: rgba(139, 124, 255, 0.12);
+    border: 2px solid rgba(162, 155, 255, 0.3);
+}
+
+.cv-circle-two {
+    right: -125px;
+    bottom: -135px;
+    border: 2px solid rgba(162, 155, 255, 0.5);
+}
+
+/* Animations */
+@keyframes cvRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes cvGlowMove {
+    from {
+        transform: translate(-30px, 10px);
+        opacity: 0.5;
+    }
+
+    to {
+        transform: translate(30px, -20px);
+        opacity: 1;
+    }
+}
+
+@keyframes cvShineMove {
+    0%, 25% {
+        left: -60%;
+    }
+
+    65%, 100% {
+        left: 150%;
+    }
+}
+
+@keyframes cvFloat {
+    from {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.3;
+    }
+
+    to {
+        transform: translateY(-25px) scale(1.4);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .cv-showcase {
+        padding: 60px 18px;
+    }
+
+    .cv-card {
+        min-height: 320px;
+        padding: 28px;
+        transform: rotate(-3deg);
+    }
+
+    .cv-card h2 {
+        font-size: 38px;
+    }
+
+    .cv-card p {
+        font-size: 10px;
+        letter-spacing: 1.2px;
+    }
+
+    .cv-download-btn {
+        padding: 13px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .cv-card,
+    .cv-download-btn,
+    .cv-download-btn i {
+        transition: none;
+    }
+
+    .cv-orbit,
+    .cv-glow,
+    .cv-shine,
+    .cv-particle {
+        animation: none;
+    }
+}
