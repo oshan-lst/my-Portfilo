@@ -1856,3 +1856,114 @@ main,
     border-radius: 16px;
 }
 
+/*icon animation css */
+
+.tech-marquee {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 30px 0;
+    margin: 60px 0;
+    background: rgba(10, 9, 25, 0.65);
+    border-top: 1px solid rgba(162, 155, 255, 0.15);
+    border-bottom: 1px solid rgba(162, 155, 255, 0.15);
+
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 8%,
+        #000 92%,
+        transparent
+    );
+
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 8%,
+        #000 92%,
+        transparent
+    );
+}
+
+.tech-track {
+    display: flex;
+    width: max-content;
+    animation: techMove 65s linear infinite;
+}
+
+.tech-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 55px;
+    padding-right: 55px;
+}
+
+.tech-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+    color: #b6b3c9;
+    font-size: 22px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.tech-item i {
+    font-size: 30px;
+}
+
+.tech-item .fa-solid {
+    color: #a29bff;
+}
+
+.tech-item .devicon-github-original {
+    color: #fff;
+}
+
+.tech-item:hover {
+    color: #fff;
+}
+
+.tech-marquee:hover .tech-track {
+    animation-play-state: paused;
+}
+
+@keyframes techMove {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 768px) {
+    .tech-marquee {
+        margin: 35px 0;
+        padding: 22px 0;
+    }
+
+    .tech-group {
+        gap: 35px;
+        padding-right: 35px;
+    }
+
+    .tech-item {
+        font-size: 17px;
+    }
+
+    .tech-item i {
+        font-size: 23px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tech-track {
+        animation: none;
+    }
+}
+
+

@@ -1350,4 +1350,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+//icon animate scroll
+
+function initializeTechMarquee() {
+    const track = document.querySelector(".tech-track");
+
+    if (!track || track.dataset.ready === "true") return;
+
+    const group = track.querySelector(".tech-group");
+
+    if (!group) return;
+
+    const duplicate = group.cloneNode(true);
+    duplicate.setAttribute("aria-hidden", "true");
+
+    track.appendChild(duplicate);
+    track.dataset.ready = "true";
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeTechMarquee);
+} else {
+    initializeTechMarquee();
+}
+
+
 
