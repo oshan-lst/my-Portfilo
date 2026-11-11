@@ -1373,6 +1373,12 @@ if (document.readyState === "loading") {
 } else {
     initializeTechMarquee();
 }
+//mobile touch
+document.querySelectorAll(".about-photo-card").forEach(card => {
+    card.addEventListener("click", () => {
+        card.classList.toggle("is-color");
+    });
+});
 
 
 
