@@ -312,40 +312,74 @@
 
 
         <!-- SCROLL DRIVEN ANIMATION -->
-        <section class="sequence-section" id="sequence">
 
-            <div class="sequence-sticky">
+        <!-- EXPERIENCE VIDEO SECTION -->
+        <section id="experience" class="experience-section">
 
-                <canvas id="sequenceCanvas" aria-label="Scroll-driven visual sequence">
-                </canvas>
+            <!-- Background Video -->
+            <div class="experience-video-bg">
+                <video id="experienceVideo" muted loop playsinline preload="metadata">
+                    <source src="assets/video/creative-3d.mp4" type="video/mp4">
+                </video>
+            </div>
 
+            <!-- Heading -->
+            <div class="experience-content">
+                <span class="experience-eyebrow">
+                    A LITTLE MOTION. A LOT OF INTENTION.
+                </span>
 
-                <div class="sequence-overlay">
+                <h2>
+                    Ideas become<br>
+                    <span>experiences.</span>
+                </h2>
+            </div>
 
-                    <p class="eyebrow">
-                        A LITTLE MOTION. A LOT OF INTENTION.
-                    </p>
+            <!-- Initial darkness -->
+            <div class="experience-darkness" id="experienceDarkness"></div>
 
-                    <h2>
-                        Ideas become<br>
-                        <span class="text-outline">experiences.</span>
-                    </h2>
+            <!-- Lantern System -->
+            <div class="lantern-system" id="lanternSystem">
 
-                    <p>
-                        Add your numbered image frames to activate
-                        this scroll-driven animation.
-                    </p>
+                <!-- Hanging Lantern -->
+                <div class="lantern-body">
+                    <svg viewBox="0 0 120 160" class="lantern-svg" aria-hidden="true">
 
+                        <!-- Top handle -->
+                        <path d="M42 43 Q60 7 78 43" fill="none" stroke="#a29bff" stroke-width="6" />
+
+                        <!-- Lantern roof -->
+                        <path d="M26 48 L94 48 L83 60 L37 60 Z" fill="#27213d" stroke="#b8a9ff" stroke-width="3" />
+
+                        <!-- Glass body -->
+                        <path d="M37 60 L83 60 L93 125 L27 125 Z" fill="#151226" stroke="#9b8bdb" stroke-width="3" />
+
+                        <!-- Glass panels -->
+                        <path d="M60 60 V125" stroke="#a29bff" stroke-width="2" />
+
+                        <!-- Light -->
+                        <circle class="lantern-light" cx="60" cy="92" r="17" fill="#55487d" />
+
+                        <!-- Bottom -->
+                        <path d="M22 125 H98 L87 140 H33 Z" fill="#27213d" stroke="#b8a9ff" stroke-width="3" />
+                    </svg>
                 </div>
 
+                <!-- Pull cord -->
+                <button class="lantern-pull" id="lanternPull" type="button"
+                    aria-label="Pull lantern cord to reveal video">
+                    <span class="lantern-rope"></span>
+                    <span class="lantern-ball"></span>
+                </button>
 
-                <div class="sequence-progress">
-                    <span id="sequenceProgress"></span>
-                </div>
+                <span class="lantern-label" id="lanternLabel">
+                    PULL TO REVEAL
+                </span>
 
             </div>
 
         </section>
+
 
 
 

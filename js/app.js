@@ -74,10 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.documentElement.dataset.theme === "light";
 
         themeButton.innerHTML = `
-            <i class="bi ${
-                isLight
-                    ? "bi-moon-stars-fill"
-                    : "bi-sun-fill"
+            <i class="bi ${isLight
+                ? "bi-moon-stars-fill"
+                : "bi-sun-fill"
             }"></i>
         `;
 
@@ -105,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-   //smooth animate
+    //smooth animate
 
     document.querySelectorAll('a[href^="#"]').forEach(link => {
 
@@ -259,9 +258,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-   
-       // ANIMATED DEVELOPER / DESIGNER / CREATOR TEXT
-   
+
+    // ANIMATED DEVELOPER / DESIGNER / CREATOR TEXT
+
 
     const roles = [
 
@@ -341,10 +340,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    
-       //SCROLL REVEAL ANIMATIONS
-       
-    
+
+    //SCROLL REVEAL ANIMATIONS
+
+
 
     if (
         !reducedMotion &&
@@ -1303,9 +1302,9 @@ ${formData.message}`
     }
 
 
-    /* =====================================================
-       18. APPLICATION INITIALIZED
-    ===================================================== */
+   
+       //APPLICATION INITIALIZED
+   
 
     console.log(
         "%cOSHAN THEEKSHANA PORTFOLIO",
@@ -1379,6 +1378,91 @@ document.querySelectorAll(".about-photo-card").forEach(card => {
         card.classList.toggle("is-color");
     });
 });
+
+//lantern animate
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const section = document.querySelector(
+        ".experience-section"
+    );
+
+    const pull = document.getElementById(
+        "lanternPull"
+    );
+
+    const video = document.getElementById(
+        "experienceVideo"
+    );
+
+    const darkness = document.getElementById(
+        "experienceDarkness"
+    );
+
+    const label = document.getElementById(
+        "lanternLabel"
+    );
+
+    if (!section || !pull || !video || !darkness) {
+        return;
+    }
+
+    let activated = false;
+
+    pull.addEventListener("click", async () => {
+
+        if (activated) return;
+
+        activated = true;
+        pull.disabled = true;
+
+        // Rope pulling animation
+        pull.classList.add("is-pulling");
+
+        // Wait for the rope to pull down
+        await new Promise(resolve =>
+            setTimeout(resolve, 450)
+        );
+
+        // Lantern light ON
+        section.classList.add("is-light-on");
+
+        // Start video from beginning
+        video.currentTime = 0;
+
+        try {
+            await video.play();
+        } catch (error) {
+            console.error(
+                "Video could not play:",
+                error
+            );
+            activated = false;
+            pull.disabled = false;
+            pull.classList.remove("is-pulling");
+            section.classList.remove("is-light-on");
+            return;
+        }
+
+        // Reveal video
+        section.classList.add("is-revealed");
+        darkness.classList.add("is-opening");
+
+        // Update text
+        if (label) {
+            label.textContent = "LIGHT IS ON";
+        }
+
+        // Remove darkness after animation
+        setTimeout(() => {
+            darkness.style.display = "none";
+        }, 2300);
+
+    });
+
+});
+
+
 
 
 
